@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<!-- Feel free to change the v12.0 to VS 2015 verion if needed -->
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll"/>
+
+    <ItemGroup>
+        <ServiceFiles Include="..\sitecore\service\*.*"/>
+    </ItemGroup>
+
+    <Target Name="DoHardening">
+        
+        <RemoveDir Directories="$(DeployDir)\$(Environment)\sitecore" />
+		
+		<!-- Note Configuration files are applied in alphabetical order. Rename the SwitchMasterToWeb.config file so that it is applied after other include files 
+		that contain references to the master database. -->
+        <Copy SourceFiles="..\App_Config\Include\SwitchMasterToWeb.config.delivery" DestinationFiles="$(DeployDir)\$(Environment)\App_Config\Include\Z_SwitchMasterToWeb\SwitchMasterToWeb.config" />
+        
+		
+		<!--  Scalability CONFIG Settings		-->		
+		<Copy SourceFiles="..\App_Config\Include\ScalabilitySettings.config.delivery" DestinationFiles="$(DeployDir)\$(Environment)\App_Config\Include\ScalabilitySettings.config" />
+		<Copy SourceFiles="..\App_Config\Include\Social\Sitecore.Social.ScalabilitySettings.config.delivery" DestinationFiles="$(DeployDir)\$(Environment)\App_Config\Include\Social\Sitecore.Social.ScalabilitySettings.config" />
+		
+		
+        <!-- Copy Service files -->
+        <Copy SourceFiles="@(ServiceFiles)" DestinationFolder="$(DeployDir)\$(Environment)\sitecore_services" />
+				
+		
+        <!-- =============================================== !-->
+        <!-- Delete Configs on delivery environment !-->
+        <Delete Files="$(DeployDir)\$(Environment)\App_Config\Commands.config" />
+        <Delete Files="$(DeployDir)\$(Environment)\App_Config\Icons.config" />
+        <Delete Files="$(DeployDir)\$(Environment)\App_Config\LanguageDefinitions.config" />
+        <Delete Files="$(DeployDir)\$(Environment)\App_Config\Portraits.config" />
+		
+		
+		<!-- Delete Configs on delivery environment after this list
+		https://doc.sitecore.net/sitecore%20experience%20platform/xdb%20configuration/configure%20a%20content%20delivery%20server
+		===============================================
+		SECTION: Files to enable or disable to configure a content delivery server
+		-->
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Analytics.Automation.TimeoutProcessing.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Analytics.Processing.Aggregation.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Analytics.Processing.Aggregation.Services.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Analytics.Processing.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Analytics.Processing.Services.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Analytics.Reporting.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Marketing.Client.config" />		
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Processing.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Shell.MarketingAutomation.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.WebDAV.config" />
+		
+		<!-- Note Configuration files are applied in alphabetical order. Rename the SwitchMasterToWeb.config file so that it is applied after other include files that contain references to the master database. -->
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.PathAnalyzer.Client.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.PathAnalyzer.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.PathAnalyzer.Processing.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.PathAnalyzer.Services.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.PathAnalyzer.StorageProviders.config" />
+				
+		<!-- Delete Content Testing Configs on delivery environment -->
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\ContentTesting\Sitecore.ContentTesting.Processing.Aggregation.config" />
+		
+		<!-- Delete Experience Analytics Configs on delivery environment -->
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ExperienceAnalytics\Sitecore.ExperienceAnalytics.Aggregation.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ExperienceAnalytics\Sitecore.ExperienceAnalytics.Client.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ExperienceAnalytics\Sitecore.ExperienceAnalytics.Reduce.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ExperienceAnalytics\Sitecore.ExperienceAnalytics.StorageProviders.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ExperienceAnalytics\Sitecore.ExperienceAnalytics.WebAPI.config" />
+		
+		<!-- Delete Experience Profile Configs on delivery environment -->
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ExperienceProfile\Sitecore.ExperienceProfile.Client.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ExperienceProfile\Sitecore.ExperienceProfile.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ExperienceProfile\Sitecore.ExperienceProfile.Reporting.config" />
+		
+		<!-- Delete Federated Experience Manager on delivery environment -->
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\FXM\Sitecore.FXM.Speak.config" />
+				
+		<!-- Delete List Management Configs on delivery environment -->		
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ListManagement\Sitecore.ListManagement.Client.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ListManagement\Sitecore.ListManagement.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ListManagement\Sitecore.ListManagement.Services.config" />
+		
+		<!-- Delete Social Connected Configs on delivery environment -->					
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Social\Sitecore.Social.ExperienceProfile.configs" />
+				
+		<!--
+		===============================================
+		SECTION: Files to enable or disable for Lucene
+		 -->					
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.ContentSearch.Lucene.Index.Master.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Marketing.Definitions.MarketingAssets.Repositories.Lucene.Index.Master.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Sitecore.Marketing.Lucene.Index.Master.config" />
+				
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ContentTesting\Sitecore.ContentTesting.Lucene.IndexConfiguration.config" />
+				
+		<!-- Delete Federated Experience Manager on delivery environment -->
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\FXM\Sitecore.FXM.Lucene.DomainsSearch.DefaultIndexConfiguration.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\FXM\Sitecore.FXM.Lucene.DomainsSearch.Index.Master.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\FXM\Sitecore.FXM.Lucene.DomainsSearch.Index.Web.config" />
+		
+		<!-- Delete List Management Configs on delivery environment -->		
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ListManagement\Sitecore.ListManagement.Lucene.Index.List.config" />
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\ListManagement\Sitecore.ListManagement.Lucene.IndexConfiguration.config" />
+		
+		<!-- Delete Social Connected Configs on delivery environment -->					
+		<Delete Files="$(DeployDir)\$(Environment)\App_Config\Include\Social\Sitecore.Social.Lucene.Index.Master.config" />
+		
+		
+    </Target>    
+</Project>
